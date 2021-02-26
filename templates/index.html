@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <title>쇼핑몰</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Hi+Melody&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Hi Melody', cursive;
+        }
+        .goodsImg {
+            width: 500px;
+            height: 300px;
+
+            background-image: url("https://images.unsplash.com/photo-1460353581641-37baddab0fa2?ixid=MXwxMjA3fDB8MHxzZWFyY2h8N3x8cnVubmluZyUyMHNob2VzfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60");
+            background-repeat: no-repeat;
+            margin: 20px auto 0px auto;
+        }
+        .goods {
+            margin:auto;
+            width: 500px;
+            font-size: 25px;
+
+        }
+        .title {
+            font-weight: bolder;
+            font-size: 50px;
+        }
+
+        .orderInfo {
+            width: 500px;
+            margin: auto;
+
+        }
+
+        .btn {
+            margin: auto;
+            display: block;
+            font-family: 'Hi Melody', cursive;
+
+        }
+        .orderList {
+            width: 500px;
+            margin: 50px auto 100px auto;
+        }
+
+    </style>
+    <script>
+        $(document).ready(function(){
+            showOrder();
+        });
+        function makeOrder(){
+             let name = $('#info').val()
+             let number = $('#number').val()
+             let address = $('#address').val()
+             let phone = $('#phone').val()
+
+             $.ajax({
+                    type: "POST",
+                    url: "/shopping",
+                    data: {name_give:name, number_give:number, address_give:address, phone_give:phone},
+                    success: function (response) {
+                        console.log(response)
+                        alert(response["msg"]);
+                        window.location.reload();
+                    }
+                })
+        }
+        function showOrder(){
+               $.ajax({
+                    type: "GET",
+                    url: "/shopping",
+                    data: {},
+                    success: function (response) {
+                        let orders = response['all_orders']
+                        for(let i = 0; i < orders.length; i++) {
+                            let name = orders[i]['name']
+                            let number = orders[i]['number']
+                            let address = orders[i]['address']
+                            let phone = orders[i]['phone']
+
+                            let temp_html = ` <tr>
+                                                <th scope="row">${i+1}</th>
+                                                <td>${name}</td>
+                                                <td>${number}</td>
+                                                <td>${address}</td>
+                                                <td>${phone}</td>
+                                              </tr>`
+
+                            $('#listBox').append(temp_html)
+                        }
+
+
+                    }
+                })
+
+        }
+
+         function deleteOrder(){
+                $('#listBox').empty()
+        }
+    </script>
+</head>
+
+<body>
+    <div class="goodsImg">
+
+    </div>
+    <div class="goods">
+        <p class="title">러닝화 <span style="font-size:30px">가격:10,000원</span></p>
+        <p>효율적인 달리기를 도와줍니다.</p>
+    </div>
+
+    <div class="orderInfo">
+      <label class="sr-only" for="info">이름</label>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">주문자 이름</div>
+        </div>
+        <input type="text" class="form-control" id="info" placeholder="이름">
+      </div>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">수량</div>
+        </div>
+        <input type="number" class="form-control" id="number" placeholder="---수량을 선택하세요---">
+      </div>
+      <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">주소</div>
+                </div>
+                <input type="text" class="form-control" id="address" placeholder="주소">
+              </div>
+      <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">전화번호</div>
+                </div>
+                <input type="text" class="form-control" id="phone" placeholder="전화번호">
+              </div>
+    </div>
+    <button onclick="makeOrder()" type="button" class="btn btn-primary">주문하기</button>
+
+    <div class="orderList">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">번호</th>
+                <th scope="col">이름</th>
+                <th scope="col">수량</th>
+                <th scope="col">주소</th>
+                <th scope="col">전화번호</th>
+            </tr>
+            </thead>
+            <tbody id="listBox">
+
+            </tbody>
+        </table>
+        <button onclick="deleteOrder()" type="button" class="btn btn-primary">삭제하기</button>
+    </div>
+
+
+
+
+</body>
+
+</html>
