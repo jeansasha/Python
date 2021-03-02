@@ -104,6 +104,10 @@
                                                 <td>${number}</td>
                                                 <td>${address}</td>
                                                 <td>${phone}</td>
+                                                <td>
+                                                <a href="#" onclick="deleteOrder('${name}')" class="card-footer-item has-text-danger">
+                                                삭제</a>
+                                                </td>
                                               </tr>`
 
                             $('#listBox').append(temp_html)
@@ -115,8 +119,16 @@
 
         }
 
-         function deleteOrder(){
-                $('#listBox').empty()
+         function deleteOrder(name){
+                   $.ajax({
+                    type: 'POST',
+                    url: '/shopping/delete',
+                    data: {name_give:name},
+                    success: function (response) {
+                        alert(response['msg']);
+                        window.location.reload()
+                    }
+                });
         }
     </script>
 </head>
@@ -157,6 +169,7 @@
                 <input type="text" class="form-control" id="phone" placeholder="전화번호">
               </div>
     </div>
+
     <button onclick="makeOrder()" type="button" class="btn btn-primary">주문하기</button>
 
     <div class="orderList">
@@ -168,13 +181,14 @@
                 <th scope="col">수량</th>
                 <th scope="col">주소</th>
                 <th scope="col">전화번호</th>
+                <th scope="col">삭제</th>
             </tr>
             </thead>
             <tbody id="listBox">
 
             </tbody>
         </table>
-        <button onclick="deleteOrder()" type="button" class="btn btn-primary">삭제하기</button>
+
     </div>
 
 
